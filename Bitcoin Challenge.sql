@@ -93,3 +93,29 @@ SELECT      market_date,
 FROM        trading.daily_btc
 
 LIMIT       1;
+
+
+-- 7. If you invested $10,000 on the 1st January 2016 - how much is your investment 
+--    worth in 1st of January 2021 and what is your total growth of your investment 
+--    as a percentage of your original investment? Use the `close_price` for this calculation.
+WITH start_bitcoin AS 
+(
+SELECT      10000 / close_price AS bitcoin_volume,
+            close_price AS start_price
+FROM        trading.daily_btc
+WHERE       market_date = '2016-01-01'
+),
+bitcoin_investment AS 
+(
+SELECT      close_price AS end_price
+FROM        trading.daily_btc
+WHERE       market_date = '2021-01-01'
+)
+SELECT      bitcoin_volume,
+            start_price,
+            end_price,
+            ROUND(100 * (end_price - start_price) / start_price) AS ROI,
+            ROUND(bitcoin_volume * end_price) AS final_investment
+            
+FROM        start_bitcoin
+CROSS JOIN  bitcoin_investment;
