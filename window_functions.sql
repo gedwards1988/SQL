@@ -44,3 +44,20 @@ WHERE       volume IS NOT NULL
 ORDER BY    volume DESC
 
 LIMIT       1;
+
+
+-- 4. How many days had a low_price price which was 10% less than the open_price?
+--    And what percentage of the total number o trading days is this (not including
+--    days with volume = NULL)
+WITH cte AS
+(
+SELECT      SUM(CASE WHEN 100 * (open_price - low_price) / open_price >= 10 THEN 1 ELSE 0 END) AS low_open_10,
+            SUM(CASE WHEN volume IS NOT NULL THEN 1 ELSE 0 END) AS total_days
+            
+FROM        trading.daily_btc
+)
+SELECT      low_open_10,
+            total_days,
+            100 * low_open_10 / total_days AS percent
+            
+FROM        cte;
