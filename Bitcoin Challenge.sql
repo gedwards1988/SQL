@@ -61,3 +61,35 @@ SELECT      low_open_10,
             100 * low_open_10 / total_days AS percent
             
 FROM        cte;
+
+
+-- 5 What percentage of days have a higher close_price than open_price?
+with cte AS
+(
+SELECT      SUM(CASE WHEN close_price > open_price THEN 1 ELSE 0 END) AS open_close,
+            COUNT(*) AS total_days
+            
+FROM        trading.daily_btc
+
+WHERE       volume IS NOT NULL
+)
+SELECT      open_close, 
+            total_days,
+            ROUND(100 * open_close / total_days::FLOAT) AS percent
+
+FROM        cte;
+
+
+-- 6 What was the largest difference between high_price and low_price and 
+--   which date did it occur?
+SELECT      market_date,
+            high_price,
+            low_price,
+            high_price - low_price AS delta,
+            RANK() OVER(
+                        ORDER BY high_price - low_price DESC NULLS LAST
+                        ) AS delta_rank
+
+FROM        trading.daily_btc
+
+LIMIT       1;
