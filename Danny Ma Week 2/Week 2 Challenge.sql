@@ -65,14 +65,14 @@ WITH pizza_orders AS
                               PARTITION BY customer_orders.order_id)
                 AS counts
     
-  FROM        pizza_runner.customer_orders
-  INNER JOIN  pizza_runner.runner_orders
-                ON runner_orders.order_id = customer_orders.order_id
+  FROM        	pizza_runner.customer_orders
+  INNER JOIN  	pizza_runner.runner_orders
+					ON runner_orders.order_id = customer_orders.order_id
                   
-  WHERE       pickup_time != 'null'
+  WHERE       	pickup_time != 'null'
 )
-SELECT      MAX(counts) AS pizza_count
+SELECT      	MAX(counts) AS pizza_count
 
-FROM        pizza_orders;
+FROM        	pizza_orders;
 
 
